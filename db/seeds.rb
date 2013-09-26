@@ -19,3 +19,7 @@ design_skills.each do |skill|
 end
 
 # TODO: create associations between users and skills
+User.all.each do |user|
+  user.proficiencies << Proficiency.create(years: fake_years,  formal: fake_formal, skill_id: fake_skills)
+  user.proficiencies << Proficiency.create(years: fake_years,  formal: fake_formal, skill_id: fake_skills)
+end
