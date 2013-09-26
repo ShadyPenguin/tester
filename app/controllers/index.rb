@@ -5,6 +5,28 @@ get '/' do
   erb :index
 end
 
+get '/skills' do 
+  @user = User.find(session[:user_id])
+  erb :skills
+end
+# not quite working
+post '/skills' do 
+  user = User.find(session[:user_id])
+  skill = Skill.new(name: params[:skill_name], context: params[:skill_context])
+  
+  redirect '/skills' unless skill
+  user.skills << skill
+  formal = params[:formal] == 'yes' ? true : false
+  prof = Proficiency.new(years: params[:years].to_i, formal: formal, skill_id: user.skills.last.id)
+  if prof
+    
+    user.proficiencies << prof
+    redirect '/'
+  else
+    redirect '/skills'
+  end
+end
+
 #----------- SESSIONS -----------
 
 get '/sessions/new' do
@@ -50,7 +72,7 @@ post '/users' do
   if @user.save
     # successfully created new account; set up the session and redirect
     session[:user_id] = @user.id
-    redirect '/'
+    redirect '/skills'
   else
     # an error occurred, re-render the sign-up form, displaying errors
     erb :sign_up
